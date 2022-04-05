@@ -1,0 +1,63 @@
+# Connect to DB with default user postgres:
+psql -U postgres
+
+List Users:
+\du
+
+# Create DB:
+CREATE DATABASE dbName;
+
+# Select DB:
+\c dbName
+
+# Create table - Example:
+CREATE TABLE tableName (
+    code        char(5) CONSTRAINT firstkey PRIMARY KEY,
+    title       varchar(40) NOT NULL,
+    id          integer NOT NULL,
+    date        date
+);
+
+# List table:
+\dt
+
+# Describe table:
+\d+ tableName
+
+# Copy table:
+CREATE TABLE public.tableNameCopy AS SELECT * from public.tableName
+
+# Count rows in table:
+select COUNT(*) from tableName
+
+# Remove duplicate items in a table
+DELETE FROM public.tableName a USING public.tableName b WHERE a.id < b.id AND a.duplicateColumn = b.duplicateColumn
+
+# Create unique index in table
+CREATE UNIQUE INDEX uniquIndexName ON tableName (collumnName);
+
+# List functions:
+\df
+
+# Describe function:
+\df+ functionName
+
+# Get function syntax:
+SELECT prosrc FROM pg_proc WHERE proname = 'function_name';
+
+# Create function in postgres - Example - Increment an integer, making use of an argument name, in PL/pgSQL:
+CREATE OR REPLACE FUNCTION increment(i integer) RETURNS integer AS $$
+        BEGIN
+                RETURN i + 1;
+        END;
+$$ LANGUAGE plpgsql;
+
+# Sample of select syntax:
+select mid, idnum, clientip, regdate, lastlogindate from tb_user where regdate::date = '2018-11-20' and lastlogindate::date = '2018-11-20';
+
+# Export to CSV:
+COPY (select * from tableName where regdate::date = '2018-11-17' and lastlogindate::date = '2018-11-17') TO '/storage/pgsql/suspiciousAccount.csv';
+
+# Find the size of a table
+select pg_size_pretty (pg_relation_size('tableName'));
+select pg_relation_size('tableName');
